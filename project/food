@@ -1,0 +1,175 @@
+# Calorie and Macro Nutrient Tracker
+# Perfect for beginners learning Python!
+
+# Store our daily totals
+daily_calories = 0
+daily_protein = 0
+daily_carbs = 0
+daily_fat = 0
+
+# Set your daily goals (you can change these!)
+calorie_goal = 2000
+protein_goal = 150  # grams
+carb_goal = 250     # grams
+fat_goal = 65       # grams
+
+# Simple food database (calories, protein, carbs, fat per 100g)
+food_database = {
+    "chicken breast": [165, 31, 0, 3.6],
+    "rice": [130, 2.7, 28, 0.3],
+    "banana": [89, 1.1, 23, 0.3],
+    "egg": [155, 13, 1.1, 11],
+    "oatmeal": [68, 2.4, 12, 1.4],
+    "salmon": [208, 25, 0, 12],
+    "broccoli": [34, 2.8, 7, 0.4],
+    "apple": [52, 0.3, 14, 0.2],
+    "bread": [265, 9, 49, 3.2],
+    "milk": [42, 3.4, 5, 1]
+    "fried rice": [163, 4.7 ,31 ,3.2],
+    "beef": [250, 26 ,0 ,17]
+}
+
+def show_menu():
+    """Display the main menu options"""
+    print("\n=== CALORIE & MACRO TRACKER ===")
+    print("1. Add food")
+    print("2. View today's totals")
+    print("3. View goals progress")
+    print("4. Show available foods")
+    print("5. Add custom food")
+    print("6. Exit")
+    print("=" * 32)
+
+def add_food():
+    """Add food to daily totals"""
+    global daily_calories, daily_protein, daily_carbs, daily_fat
+    
+    print("\nAvailable foods:")
+    for food in food_database:
+        print(f"- {food}")
+    
+    food_name = input("\nEnter food name: ").lower()
+    
+    if food_name in food_database:
+        try:
+            grams = float(input("How many grams? "))
+            
+            # Calculate nutrition based on grams (database is per 100g)
+            multiplier = grams / 100
+            calories = food_database[food_name][0] * multiplier
+            protein = food_database[food_name][1] * multiplier
+            carbs = food_database[food_name][2] * multiplier
+            fat = food_database[food_name][3] * multiplier
+            
+            # Add to daily totals
+            daily_calories += calories
+            daily_protein += protein
+            daily_carbs += carbs
+            daily_fat += fat
+            
+            print(f"\nAdded {grams}g of {food_name}:")
+            print(f"Calories: {calories:.1f}")
+            print(f"Protein: {protein:.1f}g")
+            print(f"Carbs: {carbs:.1f}g")
+            print(f"Fat: {fat:.1f}g")
+            
+        except ValueError:
+            print("Please enter a valid number for grams!")
+    else:
+        print("Food not found! Try adding it as a custom food.")
+
+def show_totals():
+    """Display today's nutrition totals"""
+    print(f"\n=== TODAY'S TOTALS ===")
+    print(f"Calories: {daily_calories:.1f}")
+    print(f"Protein: {daily_protein:.1f}g")
+    print(f"Carbs: {daily_carbs:.1f}g")
+    print(f"Fat: {daily_fat:.1f}g")
+
+def show_progress():
+    """Show progress toward daily goals"""
+    print(f"\n=== GOAL PROGRESS ===")
+    
+    # Calculate percentages
+    cal_percent = (daily_calories / calorie_goal) * 100
+    protein_percent = (daily_protein / protein_goal) * 100
+    carb_percent = (daily_carbs / carb_goal) * 100
+    fat_percent = (daily_fat / fat_goal) * 100
+    
+    print(f"Calories: {daily_calories:.1f}/{calorie_goal} ({cal_percent:.1f}%)")
+    print(f"Protein: {daily_protein:.1f}g/{protein_goal}g ({protein_percent:.1f}%)")
+    print(f"Carbs: {daily_carbs:.1f}g/{carb_goal}g ({carb_percent:.1f}%)")
+    print(f"Fat: {daily_fat:.1f}g/{fat_goal}g ({fat_percent:.1f}%)")
+    
+    # Simple progress bars
+    def show_bar(percent):
+        filled = int(percent / 10)
+        bar = "█" * filled + "░" * (10 - filled)
+        return f"[{bar}]"
+    
+    print(f"\nProgress Bars:")
+    print(f"Calories: {show_bar(cal_percent)}")
+    print(f"Protein:  {show_bar(protein_percent)}")
+    print(f"Carbs:    {show_bar(carb_percent)}")
+    print(f"Fat:      {show_bar(fat_percent)}")
+
+def show_foods():
+    """Display all available foods with their nutrition info"""
+    print(f"\n=== FOOD DATABASE (per 100g) ===")
+    print(f"{'Food':<15} {'Cal':<6} {'Protein':<8} {'Carbs':<7} {'Fat':<6}")
+    print("-" * 45)
+    
+    for food, nutrition in food_database.items():
+        cal, protein, carbs, fat = nutrition
+        print(f"{food:<15} {cal:<6} {protein:<8} {carbs:<7} {fat:<6}")
+
+def add_custom_food():
+    """Let user add their own food to the database"""
+    print("\n=== ADD CUSTOM FOOD ===")
+    name = input("Food name: ").lower()
+    
+    try:
+        calories = float(input("Calories per 100g: "))
+        protein = float(input("Protein per 100g (grams): "))
+        carbs = float(input("Carbs per 100g (grams): "))
+        fat = float(input("Fat per 100g (grams): "))
+        
+        food_database[name] = [calories, protein, carbs, fat]
+        print(f"\n{name} added to database!")
+        
+    except ValueError:
+        print("Please enter valid numbers!")
+
+def main():
+    """Main program loop"""
+    print("Welcome to your Calorie & Macro Tracker!")
+    
+    while True:
+        show_menu()
+        
+        try:
+            choice = input("Choose an option (1-6): ")
+            
+            if choice == "1":
+                add_food()
+            elif choice == "2":
+                show_totals()
+            elif choice == "3":
+                show_progress()
+            elif choice == "4":
+                show_foods()
+            elif choice == "5":
+                add_custom_food()
+            elif choice == "6":
+                print("\nThanks for using the tracker! Stay healthy! 💪")
+                break
+            else:
+                print("Please choose a number between 1-6")
+                
+        except KeyboardInterrupt:
+            print("\n\nGoodbye!")
+            break
+
+# Start the program
+if __name__ == "__main__":
+    main()
